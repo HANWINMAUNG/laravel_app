@@ -1,17 +1,20 @@
 <?php
 
 namespace App\Http\Controllers;
-
-use Illuminate\Http\Request;
 use App\Jobs\SendTestingEmailJob;
-use App\Http\Controllers\SendEmailController;
+
 
 
 
 class SendEmailController extends Controller
 {
    public function sendEmail(){
-       SendTestingEmailJob::dispatch();
+
+    //    SendTestingEmailJob::dispatch();
+
+    
+    $receiver_email = 'receiver@hmue.com';
+    dispatch(new SendTestingEmailJob($receiver_email));
        return back()->with('status','u are email is successfully.');
    }
 }

@@ -35,8 +35,8 @@ use App\Http\Controllers\SendEmailController;
 //controller
 
 // Route::get('/', 'App\Http\Controllers\PageController@index');
-
-Route::get('/',[ PageController::class, 'index']); 
+Route::view('/', 'welcome'); 
+Route::view('/dashboard', 'welcome')->name('get.home'); 
 
 Route::group([
     'prefix'=>'admin',
@@ -49,7 +49,21 @@ Route::group([
 });
 
 Route::get('send-email', [SendEmailController::class, 'sendEmail']);
-// Route::get('send-email', function(){
+
+
+Route::group([
+    'namespace' =>'App\Http\Controllers'
+], function(){
+    Route::group([
+        'namespace' =>'auth_new'
+    ], function(){
+        Route::get('register-new', "RegisterController@index")->name('register-new.index');
+        Route::post('register-new', "RegisterController@register")->name('register-new.post');
+        Route::post('logout-new', 'AuthController@logout')->name('logout-new.post');
+    });
+});
+
+// Route::get('send-email', function(){ 
 //     $data = ['name'=>'han win maung'];
 
 //     Mail::send('email.mail_test', $data, function ($message){
@@ -81,3 +95,7 @@ Route::get('send-email', [SendEmailController::class, 'sendEmail']);
 // Route::get('posts/{post}', [PostController::class, 'show'])->name('post.show');
 
 
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

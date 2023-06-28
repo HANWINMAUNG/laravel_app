@@ -2,9 +2,11 @@
 
 namespace App\Jobs;
 
+
+use App\Mail\SendTestingMail;
 use Illuminate\Bus\Queueable;
-use App\Jobs\SendTestingEmailJob;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Contracts\Mail\Mailer;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -19,9 +21,13 @@ class SendTestingEmailJob implements ShouldQueue
      *
      * @return void
      */
-    public function __construct()
+    
+    protected $receiver_email;
+
+    public function __construct($receiver_email)
     {
-        //
+        
+        $this->receiver_email = $receiver_email;
     }
 
     /**
@@ -29,13 +35,18 @@ class SendTestingEmailJob implements ShouldQueue
      *
      * @return void
      */
-    public function handle()
+    public function handle(Mailer $mailer)
     {
-        $data = ['name'=>'han win maung'];
+        $subject = 'Welcome';
+        $name = 'John';
+        $mailer->to($this->receiver_email, 'user name')
+                  ->send(new SendTestingMail($subject,$name));
 
-        Mail::send('email.mail_test', $data, function ($message){
-           $message->to('dev.hwn@gmail.com','han win maung')->subject('email subject');
-           $message->from('laravelbasic@programming.com', 'Testing email');
-        });
+        // $data = ['name'=>'han win maung'];
+
+        // Mail::send('email.mail_test', $data, function ($message){
+        //    $message->to('dev.hwn@gmail.com','han win maung')->subject('email subject');
+        //    $message->from('laravelbasic@programming.com', 'Testing email');
+        // });
     }
 }
